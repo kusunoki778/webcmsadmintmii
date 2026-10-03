@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,10 +10,11 @@ import '../services/api_service.dart';
 import '../models/artikel.dart';
 import '../models/katalog.dart';
 import 'detail_screen.dart';
-import 'checkout_webview_screen.dart';
+
 
 class BerandaScreen extends StatefulWidget {
-  const BerandaScreen({super.key});
+  final VoidCallback? onNavigateToTickets;
+  const BerandaScreen({super.key, this.onNavigateToTickets});
 
   @override
   State<BerandaScreen> createState() => _BerandaScreenState();
@@ -21,37 +23,78 @@ class BerandaScreen extends StatefulWidget {
 class _BerandaScreenState extends State<BerandaScreen> {
   final ApiService _apiService = ApiService();
   late Future<List<Artikel>> _futureArtikels;
-  late Future<List<Katalog>> _futurePopular;
   late Future<Map<String, String>> _futureSettings;
+
+  // State rotasi tempat populer
+  List<Katalog> _allPopularItems = [];
+  bool _isLoadingPopular = true;
+  int _activeCategoryIndex = 0; // 0: anjungan, 1: wahana, 2: museum
+  final List<String> _categories = ['anjungan', 'wahana', 'museum'];
+  Timer? _rotationTimer;
 
   @override
   void initState() {
     super.initState();
     _futureArtikels = _apiService.fetchArtikels();
-    _futurePopular = _apiService.fetchKatalog('anjungan');
     _futureSettings = _apiService.fetchSettings();
+    _loadPopularItems();
+  }
+
+  @override
+  void dispose() {
+    _rotationTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadPopularItems() async {
+    if (!mounted) return;
+    setState(() => _isLoadingPopular = true);
+    try {
+      final results = await Future.wait([
+        _apiService.fetchKatalog('anjungan'),
+        _apiService.fetchKatalog('wahana'),
+        _apiService.fetchKatalog('museum'),
+      ]);
+      
+      if (mounted) {
+        setState(() {
+          _allPopularItems = [...results[0], ...results[1], ...results[2]];
+          _isLoadingPopular = false;
+        });
+        _startRotationTimer();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoadingPopular = false);
+      }
+    }
+  }
+
+  void _startRotationTimer() {
+    _rotationTimer?.cancel();
+    _rotationTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (mounted) {
+        setState(() {
+          _activeCategoryIndex = (_activeCategoryIndex + 1) % _categories.length;
+        });
+      }
+    });
   }
 
   void _refresh() {
     setState(() {
       _futureArtikels = _apiService.fetchArtikels();
-      _futurePopular = _apiService.fetchKatalog('anjungan');
       _futureSettings = _apiService.fetchSettings();
     });
+    _loadPopularItems();
   }
 
-  void _openCheckoutWebView(String url) {
-    if (url.isEmpty) return;
-    Navigator.push(
-      context,
-      AppPageRoute(
-        page: CheckoutWebviewScreen(
-          rawUrl: url,
-          title: 'Beli Tiket TMII',
-        ),
-      ),
-    );
+  List<Katalog> get _filteredPopularItems {
+    final currentCat = _categories[_activeCategoryIndex];
+    return _allPopularItems.where((item) => item.kategori.toLowerCase() == currentCat).toList();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +112,7 @@ class _BerandaScreenState extends State<BerandaScreen> {
                 _buildHeader(),
                 _buildHeroBanner(),
                 _buildBuyTicketButton(),
-                _buildSectionHeader('Tempat Populer', 'Lihat Semua'),
+                _buildPopularSectionHeader(),
                 _buildPopularPlaces(),
                 _buildSectionHeader('Berita Terbaru', 'Lihat Semua'),
                 _buildLatestNews(),
@@ -217,78 +260,72 @@ class _BerandaScreenState extends State<BerandaScreen> {
   Widget _buildBuyTicketButton() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-      child: FutureBuilder<Map<String, String>>(
-        future: _futureSettings,
-        builder: (context, snapshot) {
-          final url = snapshot.data?['booking_url'] ?? '';
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: AppColors.premiumShadow(),
-              border: Border.all(color: Theme.of(context).dividerColor),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => _openCheckoutWebView(url),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.accentGradient,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(
-                            Icons.confirmation_num_rounded,
-                            color: Colors.white,
-                            size: 26,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Beli Tiket Masuk TMII',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                'Pesan mudah via Online & e-wallet',
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: AppColors.primary,
-                          size: 16,
-                        ),
-                      ],
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: AppColors.premiumShadow(),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onNavigateToTickets,
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.accentGradient,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(
+                        Icons.confirmation_num_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Beli Tiket Masuk TMII',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Pesan mudah via Online & e-wallet',
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: AppColors.primary,
+                      size: 16,
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -322,97 +359,164 @@ class _BerandaScreenState extends State<BerandaScreen> {
     );
   }
 
-  // ── POPULAR PLACES ──────────────────────────────────
-  Widget _buildPopularPlaces() {
-    return SizedBox(
-      height: 190,
-      child: FutureBuilder<List<Katalog>>(
-        future: _futurePopular,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildHorizontalShimmer(150, 190);
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Belum ada data', style: TextStyle(color: AppColors.textHint)));
-          }
-
-          return ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-            itemCount: snapshot.data!.length > 6 ? 6 : snapshot.data!.length,
-            itemBuilder: (context, index) {
-              final item = snapshot.data![index];
-              final imageUrl = ApiService.getStorageUrl(item.gambar, 'katalogs');
-
-              return GestureDetector(
-                onTap: () => Navigator.push(context, AppPageRoute(
-                  page: DetailScreen(id: item.id.toString(), title: item.nama, imageUrl: imageUrl, content: item.deskripsi, category: item.kategori),
-                )),
+  // ── POPULAR SECTION HEADER ─────────────────────────
+  Widget _buildPopularSectionHeader() {
+    final activeCatName = _categories[_activeCategoryIndex].toUpperCase();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Tempat Populer',
+                style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  letterSpacing: -0.2,
+                ),
+              ),
+              const SizedBox(width: 8),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: ScaleTransition(scale: animation, child: child),
+                  );
+                },
                 child: Container(
-                  width: 145,
-                  margin: const EdgeInsets.only(right: 14),
+                  key: ValueKey(activeCatName),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: AppColors.premiumShadow(),
+                    color: AppColors.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.network(imageUrl, fit: BoxFit.cover, errorBuilder: (c, e, s) => Container(color: Colors.grey[300])),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter, end: Alignment.topCenter,
-                              colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
-                              stops: const [0.0, 0.65],
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 12, left: 12, right: 12,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(alpha: 0.9),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  item.kategori.toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                item.nama,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 13,
-                                  height: 1.25,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                  child: Text(
+                    activeCatName,
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
-              );
-            },
-          );
-        },
+              ),
+            ],
+          ),
+          const Text(
+            'Lihat Semua',
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.w700,
+              fontSize: 13.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── POPULAR PLACES ──────────────────────────────────
+  Widget _buildPopularPlaces() {
+    if (_isLoadingPopular) {
+      return _buildHorizontalShimmer(150, 190);
+    }
+    final items = _filteredPopularItems;
+    if (items.isEmpty) {
+      return const Center(child: Text('Belum ada data', style: TextStyle(color: AppColors.textHint)));
+    }
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 600),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      child: SizedBox(
+        key: ValueKey(_activeCategoryIndex), // Memicu animasi transisi ketika kategori berganti
+        height: 190,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+          itemCount: items.length > 6 ? 6 : items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            final imageUrl = ApiService.getStorageUrl(item.gambar, 'katalogs');
+
+            return GestureDetector(
+              onTap: () => Navigator.push(context, AppPageRoute(
+                page: DetailScreen(id: item.id.toString(), title: item.nama, imageUrl: imageUrl, content: item.deskripsi, category: item.kategori),
+              )),
+              child: Container(
+                width: 145,
+                margin: const EdgeInsets.only(right: 14),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: AppColors.premiumShadow(),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(imageUrl, fit: BoxFit.cover, errorBuilder: (c, e, s) => Container(color: Colors.grey[300])),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter, end: Alignment.topCenter,
+                            colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
+                            stops: const [0.0, 0.65],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 12, left: 12, right: 12,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.9),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                item.kategori.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              item.nama,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13,
+                                height: 1.25,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -588,17 +692,20 @@ class _BerandaScreenState extends State<BerandaScreen> {
 
   // ── SHIMMER HELPER ──────────────────────────────────
   Widget _buildHorizontalShimmer(double width, double height) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[200]!,
-      highlightColor: Colors.grey[100]!,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: 3,
-        itemBuilder: (context, index) => Container(
-          width: width,
-          margin: const EdgeInsets.only(right: 12),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+    return SizedBox(
+      height: height,
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[200]!,
+        highlightColor: Colors.grey[100]!,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: 3,
+          itemBuilder: (context, index) => Container(
+            width: width,
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          ),
         ),
       ),
     );

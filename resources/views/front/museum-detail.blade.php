@@ -3,11 +3,11 @@
 @section('content')
 <style>
     /* Style sama persis biar rapi */
-    .hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 30px; }
+    .hero-img { width: 100%; height: 400px; object-fit: cover; border-radius: 16px; }
     .btn-orange { background: #f59e0b; color: white; border-radius: 12px; padding: 12px; width: 100%; border: none; font-weight: 700; margin-bottom: 10px; text-align: left; transition: 0.3s; }
     .btn-coral { background: #fb923c; color: white; border-radius: 12px; padding: 12px; width: 100%; border: none; font-weight: 700; text-align: left; transition: 0.3s; }
     .btn-orange:hover, .btn-coral:hover { opacity: 0.8; color: white; }
-    .side-card-info { background: linear-gradient(135deg, #00B4B4, #9333ea); border-radius: 20px; padding: 25px; color: white; }
+    .side-card-info { background: linear-gradient(135deg, #0f172a, #1e293b); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 25px; color: white; }
     .title-main { font-weight: 800; font-size: 2.5rem; color: #1e293b; }
     .title-main span { color: #00B4B4; }
     .card-lainnya { position: relative; border-radius: 20px; overflow: hidden; height: 300px; display: block; text-decoration: none; }

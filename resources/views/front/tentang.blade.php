@@ -46,22 +46,23 @@
         justify-content: center;
         margin: 0 auto 25px;
         font-size: 1.8rem;
-        color: #fff;
     }
     
-    .bg-green { background-color: #00B4B4; }
-    .bg-purple { background-color: #9333ea; }
-    .bg-yellow { background-color: #facc15; }
-    .bg-teal { background-color: #0d9488; }
+    .bg-green { background-color: #e6f7f7; color: #00B4B4; }
+    .bg-purple { background-color: #f3e8ff; color: #9333ea; }
+    .bg-yellow { background-color: #fef9c3; color: #ca8a04; }
+    .bg-teal { background-color: #f0fdf4; color: #15803d; }
 
-    /* 4. TMII DALAM ANGKA (GRADIENT) */
+    /* 4. TMII DALAM ANGKA (SLATE DARK) */
     .stats-banner {
-        background: linear-gradient(90deg, #00B4B4 0%, #9333ea 100%);
-        border-radius: 30px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
         padding: 60px 20px;
         color: white;
         margin-top: 80px;
         text-align: center;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
     }
     .stat-number { font-weight: 800; font-size: 3rem; margin-bottom: 5px; color: #facc15; }
     .stat-label { font-weight: 600; font-size: 1rem; opacity: 0.9; }

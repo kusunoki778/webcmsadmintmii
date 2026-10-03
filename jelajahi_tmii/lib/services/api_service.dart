@@ -1,17 +1,13 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
 import '../models/artikel.dart';
 import '../models/katalog.dart';
 
 class ApiService {
   static String get baseUrl {
-    if (kIsWeb) {
-      return 'http://127.0.0.1:8000/api';
-    } else {
-      // 10.0.2.2 adalah IP khusus untuk Emulator Android agar bisa mengakses localhost komputer
-      return 'http://10.0.2.2:8000/api';
-    }
+    // Menggunakan URL ngrok aktif agar HP/Emulator bisa mengakses backend local via internet
+    return 'https://used-luteotropic-alta.ngrok-free.dev/api';
   }
 
   static String getStorageUrl(String? path, String folder) {
@@ -21,7 +17,10 @@ class ApiService {
 
   Future<List<Artikel>> fetchArtikels() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/beranda/artikel'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/beranda/artikel'),
+        headers: {'ngrok-skip-browser-warning': 'true'},
+      );
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body)['data'];
         return jsonResponse.map((data) => Artikel.fromJson(data)).toList();
@@ -35,7 +34,10 @@ class ApiService {
 
   Future<List<Katalog>> fetchKatalog(String kategori) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/jelajahi/$kategori'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/jelajahi/$kategori'),
+        headers: {'ngrok-skip-browser-warning': 'true'},
+      );
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body)['data'];
         return jsonResponse.map((data) => Katalog.fromJson(data)).toList();
@@ -50,7 +52,10 @@ class ApiService {
   /// Ambil settings/konfigurasi dari CMS
   Future<Map<String, String>> fetchSettings() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/settings'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/settings'),
+        headers: {'ngrok-skip-browser-warning': 'true'},
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body)['data'];
         return Map<String, String>.from(data);
@@ -65,7 +70,10 @@ class ApiService {
   /// Ambil daftar tiket dari CMS
   Future<List<Map<String, dynamic>>> fetchTikets() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/tiket'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/tiket'),
+        headers: {'ngrok-skip-browser-warning': 'true'},
+      );
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body)['data'];
         return jsonResponse.cast<Map<String, dynamic>>();

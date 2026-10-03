@@ -9,14 +9,19 @@
 
     /* 2. TOP INFO CARDS */
     .card-info-hubungi {
-        border: none;
-        border-radius: 25px;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
         padding: 40px 20px;
         text-align: center;
         background: #fff;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         height: 100%;
         transition: 0.3s;
+    }
+    .card-info-hubungi:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        border-color: #00B4B4;
     }
     .icon-circle-hubungi {
         width: 65px;
@@ -27,12 +32,12 @@
         justify-content: center;
         margin: 0 auto 20px;
         font-size: 1.5rem;
-        color: white;
+        transition: 0.3s;
     }
-    .bg-tosca { background-color: #00B4B4; }
-    .bg-purple { background-color: #9333ea; }
-    .bg-yellow { background-color: #facc15; }
-    .bg-blue { background-color: #0ea5e9; }
+    .bg-tosca { background-color: #e6f7f7; color: #00B4B4; }
+    .bg-purple { background-color: #f3e8ff; color: #9333ea; }
+    .bg-yellow { background-color: #fef9c3; color: #ca8a04; }
+    .bg-blue { background-color: #e0f2fe; color: #0284c7; }
 
     .card-info-hubungi h5 { font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; color: #1e293b; }
     .card-info-hubungi p { font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.5; }
@@ -42,9 +47,10 @@
         max-width: 800px;
         margin: 60px auto;
         background: #fff;
-        border-radius: 35px;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
         padding: 50px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
     }
     .form-hubungi-wrapper h3 { font-weight: 800; margin-bottom: 35px; color: #1e293b; }
     
@@ -65,10 +71,10 @@
     }
 
     .btn-kirim-gradasi {
-        background: linear-gradient(90deg, #00B4B4 0%, #9333ea 100%);
+        background: #00B4B4;
         color: white;
         border: none;
-        border-radius: 15px;
+        border-radius: 10px;
         padding: 15px;
         width: 100%;
         font-weight: 700;
@@ -78,16 +84,18 @@
         gap: 10px;
         transition: 0.3s;
     }
-    .btn-kirim-gradasi:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-kirim-gradasi:hover { background-color: #009c9c; transform: translateY(-2px); }
 
     /* 4. SOCIAL MEDIA BANNER */
     .social-banner-hubungi {
-        background: linear-gradient(90deg, #00B4B4 0%, #9333ea 100%);
-        border-radius: 30px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
         padding: 60px 20px;
         color: white;
         text-align: center;
         margin-bottom: 80px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
     }
     .social-banner-hubungi h3 { font-weight: 800; font-size: 2rem; margin-bottom: 10px; }
     .social-circle-group { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
@@ -160,13 +168,7 @@
             <label class="label-hubungi">Nomor Telepon</label>
             <input type="text" name="telepon" class="input-hubungi" placeholder="08xxxxxxxxxx" required>
 
-            <label class="label-hubungi">Subjek</label>
-            <select name="subjek" class="input-hubungi" required>
-                <option value="">Pilih Subjek</option>
-                <option value="Informasi Tiket">Informasi Tiket</option>
-                <option value="Keluhan & Saran">Keluhan & Saran</option>
-                <option value="Kemitraan">Kemitraan</option>
-            </select>
+
 
             <label class="label-hubungi">Pesan</label>
             <textarea name="pesan" class="input-hubungi" rows="5" placeholder="Tulis pesan Anda di sini..." required></textarea>

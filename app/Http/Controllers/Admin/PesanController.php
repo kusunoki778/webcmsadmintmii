@@ -30,9 +30,11 @@ class PesanController extends Controller
             'nama'    => 'required|string|max:255',
             'email'   => 'required|email',
             'telepon' => 'required|string|max:20',
-            'subjek'  => 'required|string',
             'pesan'   => 'required|string',
         ]);
+
+        // Default subjek karena kolom database NOT NULL
+        $validated['subjek'] = 'Pesan Hubungi Kami';
 
         // Simpan ke database
         Pesan::create($validated);

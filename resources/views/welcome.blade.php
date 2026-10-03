@@ -156,10 +156,7 @@
         line-height: 1.3;
         text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-    
-    .card-wajah.switching img, .card-wajah.switching .card-wajah-overlay {
-        opacity: 0.15;
-    }
+
 
     /* 4. ARTIKEL DEPAN */
     .card-artikel { border: 1px solid #e2e8f0; transition: 0.3s; }
@@ -231,11 +228,11 @@
 
     <div class="carousel-inner">
         <!-- Slide 1 -->
-        <div class="carousel-item active hero-home" data-bs-interval="5000" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('{{ get_setting('hero_bg_1') ? asset('storage/' . get_setting('hero_bg_1')) : asset('assets/img/hero-bg.jpg') }}');">
+        <div class="carousel-item active hero-home" data-bs-interval="5000" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('{{ get_setting('hero_bg_1') ? asset('storage/' . get_setting('hero_bg_1')) : asset('assets/img/peta-jelajah.jpg') }}');">
             <div class="container text-center">
                 <h1>{{ get_setting('hero_title_1') }}</h1>
                 <p>{{ get_setting('hero_p_1') }}</p>
-                <a href="{{ route('beli-tiket') }}" class="btn-hero">Beli Tiket</a>
+                <a href="{{ route('beli-tiket') }}" class="btn-hero">Beli Voucher</a>
             </div>
         </div>
 
@@ -297,31 +294,31 @@
     <div class="row justify-content-center g-4">
         <!-- Anjungan Card -->
         <div class="col-md-4 col-4" data-aos="fade-up" data-aos-delay="100">
-            <a href="#" id="card-anjungan" class="card-wajah position-relative">
-                <img id="img-anjungan" src="{{ $wajah_anjungans->first() && $wajah_anjungans->first()->gambar ? asset('storage/katalogs/' . $wajah_anjungans->first()->gambar) : asset('assets/img/card-anjungan.jpg') }}" alt="Anjungan">
+            <a href="{{ route('anjungan.index') }}" id="card-anjungan" class="card-wajah position-relative">
+                <img id="img-anjungan" src="{{ asset('assets/img/card-anjungan.jpg') }}" alt="Anjungan">
                 <div class="card-wajah-overlay">
                     <span class="category-tag">Anjungan</span>
-                    <h5 class="item-title" id="title-anjungan">{{ $wajah_anjungans->first() ? $wajah_anjungans->first()->nama : 'Anjungan Daerah' }}</h5>
+                    <h5 class="item-title" id="title-anjungan">Anjungan Daerah</h5>
                 </div>
             </a>
         </div>
         <!-- Museum Card -->
         <div class="col-md-4 col-4" data-aos="fade-up" data-aos-delay="200">
-            <a href="#" id="card-museum" class="card-wajah position-relative">
-                <img id="img-museum" src="{{ $wajah_museums->first() && $wajah_museums->first()->gambar ? asset('storage/katalogs/' . $wajah_museums->first()->gambar) : asset('assets/img/card-museum.jpg') }}" alt="Museum">
+            <a href="{{ route('museum.detail') }}" id="card-museum" class="card-wajah position-relative">
+                <img id="img-museum" src="{{ asset('assets/img/card-museum.jpg') }}" alt="Museum">
                 <div class="card-wajah-overlay">
                     <span class="category-tag">Museum</span>
-                    <h5 class="item-title" id="title-museum">{{ $wajah_museums->first() ? $wajah_museums->first()->nama : 'Museum' }}</h5>
+                    <h5 class="item-title" id="title-museum">Museum TMII</h5>
                 </div>
             </a>
         </div>
         <!-- Wahana Card -->
         <div class="col-md-4 col-4" data-aos="fade-up" data-aos-delay="300">
-            <a href="#" id="card-wahana" class="card-wajah position-relative">
-                <img id="img-wahana" src="{{ $wajah_wahanas->first() && $wajah_wahanas->first()->gambar ? asset('storage/katalogs/' . $wajah_wahanas->first()->gambar) : asset('assets/img/card-wahana.jpg') }}" alt="Wahana">
+            <a href="{{ route('wahana.detail') }}" id="card-wahana" class="card-wajah position-relative">
+                <img id="img-wahana" src="{{ asset('assets/img/card-wahana.jpg') }}" alt="Wahana">
                 <div class="card-wajah-overlay">
                     <span class="category-tag">Wahana</span>
-                    <h5 class="item-title" id="title-wahana">{{ $wajah_wahanas->first() ? $wajah_wahanas->first()->nama : 'Wahana Rekreasi' }}</h5>
+                    <h5 class="item-title" id="title-wahana">Wahana Rekreasi</h5>
                 </div>
             </a>
         </div>
@@ -412,78 +409,8 @@
 
 <!-- SCRIPT PANZOOM FIX -->
 <script src="https://unpkg.com/panzoom@9.4.3/dist/panzoom.min.js"></script>
-@php
-    $listAnjunganMapped = $wajah_anjungans->map(function($item) {
-        return [
-            'nama' => $item->nama,
-            'gambar' => $item->gambar ? asset('storage/katalogs/' . $item->gambar) : asset('assets/img/card-anjungan.jpg'),
-            'link' => route('katalog.show', $item->slug)
-        ];
-    })->values()->toArray();
-
-    $listMuseumMapped = $wajah_museums->map(function($item) {
-        return [
-            'nama' => $item->nama,
-            'gambar' => $item->gambar ? asset('storage/katalogs/' . $item->gambar) : asset('assets/img/card-museum.jpg'),
-            'link' => route('katalog.show', $item->slug)
-        ];
-    })->values()->toArray();
-
-    $listWahanaMapped = $wajah_wahanas->map(function($item) {
-        return [
-            'nama' => $item->nama,
-            'gambar' => $item->gambar ? asset('storage/katalogs/' . $item->gambar) : asset('assets/img/card-wahana.jpg'),
-            'link' => route('katalog.show', $item->slug)
-        ];
-    })->values()->toArray();
-@endphp
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- ROTATOR SCRIPT ---
-        const listAnjungan = @json($listAnjunganMapped);
-        const listMuseum = @json($listMuseumMapped);
-        const listWahana = @json($listWahanaMapped);
-
-        function setupRotator(cardId, imgId, titleId, itemsList, delay) {
-            if (!itemsList || itemsList.length === 0) return;
-            
-            let currentIndex = 0;
-            const cardEl = document.getElementById(cardId);
-            const imgEl = document.getElementById(imgId);
-            const titleEl = document.getElementById(titleId);
-
-            // Set initial values
-            cardEl.href = itemsList[currentIndex].link;
-            imgEl.src = itemsList[currentIndex].gambar;
-            titleEl.textContent = itemsList[currentIndex].nama;
-
-            // Rotator loop
-            setInterval(() => {
-                cardEl.classList.add('switching');
-                
-                setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % itemsList.length;
-                    cardEl.href = itemsList[currentIndex].link;
-                    imgEl.src = itemsList[currentIndex].gambar;
-                    titleEl.textContent = itemsList[currentIndex].nama;
-                    
-                    // Wait for image loading before fading back in
-                    imgEl.onload = () => {
-                        cardEl.classList.remove('switching');
-                    };
-                    // Fallback
-                    setTimeout(() => {
-                        cardEl.classList.remove('switching');
-                    }, 300);
-                }, 400);
-            }, delay);
-        }
-
-        // Staggered intervals: Anjungan every 5s, Museum every 6s, Wahana every 7s
-        setupRotator('card-anjungan', 'img-anjungan', 'title-anjungan', listAnjungan, 5000);
-        setupRotator('card-museum', 'img-museum', 'title-museum', listMuseum, 6000);
-        setupRotator('card-wahana', 'img-wahana', 'title-wahana', listWahana, 7000);
 
 
         // --- PANZOOM MAP SCRIPT ---

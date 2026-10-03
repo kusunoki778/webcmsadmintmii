@@ -180,7 +180,7 @@ class _JelajahiScreenState extends State<JelajahiScreen> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
-                      childAspectRatio: 0.72,
+                      childAspectRatio: 0.68,
                     ),
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
@@ -214,8 +214,8 @@ class _JelajahiScreenState extends State<JelajahiScreen> {
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                                   child: Image.network(
-                                    imageUrl, height: 120, width: double.infinity, fit: BoxFit.cover,
-                                    errorBuilder: (c, e, s) => Container(height: 120, color: Colors.grey[200], child: const Icon(Icons.image, color: Colors.grey)),
+                                    imageUrl, height: 105, width: double.infinity, fit: BoxFit.cover,
+                                    errorBuilder: (c, e, s) => Container(height: 105, color: Colors.grey[200], child: const Icon(Icons.image, color: Colors.grey)),
                                   ),
                                 ),
                               ),

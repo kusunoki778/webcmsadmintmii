@@ -50,20 +50,21 @@
     /* Card Styling */
     .card-info-tmii {
         background: #fff;
-        border: 1px solid #f1f5f9;
-        border-radius: 30px;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
         padding: 40px 20px;
         text-align: center;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.02);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         height: 100%;
     }
     .card-info-tmii:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        border-color: #00B4B4;
     }
 
-    /* Icon Gradients (Identik Gambar) */
+    /* Icon Circle Flat Minimalist */
     .icon-circle {
         width: 70px;
         height: 70px;
@@ -72,18 +73,18 @@
         align-items: center;
         justify-content: center;
         margin: 0 auto 25px;
-        color: #fff;
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+        transition: 0.3s;
     }
-    /* Warna gradasi icon sesuai baris dan kolom di gambar */
-    .grad-blue { background: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%); }
-    .grad-tosca { background: #00B4B4; }
-    .grad-purple { background: #9333ea; }
-    .grad-yellow { background: #facc15; }
+    /* Warna latar pastel dengan teks warna solid yang kontras */
+    .grad-blue { background-color: #e0f2fe; color: #0284c7; }
+    .grad-tosca { background-color: #e6f7f7; color: #00B4B4; }
+    .grad-purple { background-color: #f3e8ff; color: #9333ea; }
+    .grad-yellow { background-color: #fef9c3; color: #ca8a04; }
 
     .info-title {
         font-weight: 800;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         color: #1e293b;
         margin-bottom: 8px;
     }
@@ -98,13 +99,15 @@
         font-size: 1.6rem;
     }
 
-    /* Information Banner (Gradient Box) */
+    /* Information Banner (Slate Dark Premium) */
     .info-banner-box {
-        background: linear-gradient(90deg, #00B4B4 0%, #9333ea 100%);
-        border-radius: 25px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
         padding: 50px;
         color: white;
         margin-top: 80px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
     }
     .info-banner-box h4 {
         font-weight: 800;
@@ -204,14 +207,14 @@
             <div class="card-info-tmii">
                 <div class="icon-circle grad-purple"><i class="fa-solid fa-car"></i></div>
                 <h5 class="info-title">Mobil</h5>
-                <p class="info-price" style="color: #9333ea;">{{ get_setting('price_car', 'Rp 35.000') }}</p>
+                <p class="info-price">{{ get_setting('price_car', 'Rp 35.000') }}</p>
             </div>
         </div>
         <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
             <div class="card-info-tmii">
                 <div class="icon-circle grad-yellow"><i class="fa-solid fa-motorcycle"></i></div>
                 <h5 class="info-title">Motor</h5>
-                <p class="info-price" style="color: #facc15;">{{ get_setting('price_motor', 'Rp 15.000') }}</p>
+                <p class="info-price">{{ get_setting('price_motor', 'Rp 15.000') }}</p>
             </div>
         </div>
         <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
@@ -225,14 +228,14 @@
             <div class="card-info-tmii">
                 <div class="icon-circle grad-purple"><i class="fa-solid fa-bus"></i></div>
                 <h5 class="info-title">Bus</h5>
-                <p class="info-price" style="color: #9333ea;">{{ get_setting('price_bus', 'Rp 60.000') }}</p>
+                <p class="info-price">{{ get_setting('price_bus', 'Rp 60.000') }}</p>
             </div>
         </div>
         <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
             <div class="card-info-tmii">
                 <div class="icon-circle grad-yellow"><i class="fa-solid fa-truck"></i></div>
                 <h5 class="info-title">Truk</h5>
-                <p class="info-price" style="color: #facc15;">{{ get_setting('price_truck', 'Rp 40.000') }}</p>
+                <p class="info-price">{{ get_setting('price_truck', 'Rp 40.000') }}</p>
             </div>
         </div>
     </div>

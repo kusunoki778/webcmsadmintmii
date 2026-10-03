@@ -19,7 +19,7 @@
         /* Page Transition Effect */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #fff; 
+            background-color: #ffffff; 
             color: #1e293b; 
             margin: 0; 
             overflow-x: hidden;
@@ -31,7 +31,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .navbar { background-color: #ffffff; padding: 15px 0; border-bottom: 1px solid #f1f5f9; transition: all 0.3s ease; }
+        .navbar { background-color: #f4f4f4; padding: 15px 0; border-bottom: 1px solid #f1f5f9; transition: all 0.3s ease; }
         .navbar-brand { font-weight: 800; color: var(--tmii-primary) !important; font-size: 1.6rem; letter-spacing: -1px; }
         .nav-link { color: #334155 !important; font-weight: 500; font-size: 0.95rem; margin: 0 15px; transition: 0.2s; }
         .nav-link:hover { color: var(--tmii-primary) !important; }
@@ -83,7 +83,7 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
-                    <a href="{{ route('beli-tiket') }}" class="btn-beli-nav">Beli Tiket</a>
+                    <a href="{{ route('beli-tiket') }}" class="btn-beli-nav">Beli Vouchert</a>
                 </div>
             </div>
         </div>

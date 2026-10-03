@@ -20,7 +20,7 @@
 
     <div class="text-center mb-5" data-aos="fade-up">
         <h1 class="fw-bold" style="font-size: 3rem; letter-spacing: -1px;">Berita & <span style="color: #00B4B4;">Artikel</span></h1>
-        <div class="mx-auto" style="width: 80px; height: 4px; background: linear-gradient(90deg, #00B4B4, #9333ea); border-radius: 2px; margin-top: 10px; margin-bottom: 20px;"></div>
+        <div class="mx-auto" style="width: 80px; height: 4px; background: #00B4B4; border-radius: 2px; margin-top: 10px; margin-bottom: 20px;"></div>
         <p class="text-muted fs-5">Temukan informasi terbaru seputar aktivitas, event, dan cerita menarik di TMII</p>
     </div>
 
